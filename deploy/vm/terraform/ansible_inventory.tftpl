@@ -1,0 +1,17 @@
+[webs]
+%{ for index, hostname in web_hostnames ~}
+${hostname} ansible_host=${web_public_ips[index]}
+%{ endfor ~}
+
+[webs:vars]
+ansible_user=opc
+ansible_private_key_file=~/.ssh/stwl
+
+[servers]
+%{ for index, hostname in server_hostnames ~}
+${hostname} ansible_host=${server_public_ips[index]}
+%{ endfor ~}
+
+[servers:vars]
+ansible_user=opc
+ansible_private_key_file=~/.ssh/stwl

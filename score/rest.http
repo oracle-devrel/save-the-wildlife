@@ -1,0 +1,39 @@
+@hostname = localhost
+@port = 8080
+@userUuid1 = 63ab5eac-4272-40d5-9fdb-22f70b53779e
+@userUuid2 = 4e438227-fc9f-44ba-a988-033ee60458c8
+
+###
+
+GET http://{{hostname}}:{{port}}/api/score
+
+###
+
+GET http://{{hostname}}:{{port}}/api/score/{{userUuid1}}
+
+###
+
+GET http://{{hostname}}:{{port}}/api/score/unknown
+
+###
+
+PUT http://{{hostname}}:{{port}}/api/score/{{userUuid1}}
+content-type: application/json
+
+{
+    "name": "user 1",
+    "score": 20
+}
+
+###
+
+PUT http://{{hostname}}:{{port}}/api/score/{{userUuid2}}
+content-type: application/json
+
+{
+    "name": "user 2",
+    "score": 20
+}
+
+###
+DELETE http://{{hostname}}:{{port}}/api/score

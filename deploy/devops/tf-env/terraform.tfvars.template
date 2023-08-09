@@ -1,0 +1,6 @@
+config_file_profile   = "DEFAULT"
+region                = "REGION_NAME"
+tenancy_ocid          = "TENANCY_OCID"
+compartment_ocid      = "COMPARTMENT_OCID"
+subscription_email    = "SUBSCRIPTION_EMAIL"
+github_token          = "GITHUB_TOKEN"

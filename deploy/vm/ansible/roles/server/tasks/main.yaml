@@ -1,0 +1,52 @@
+---
+- name: Install Node
+  dnf:
+    name: "@nodejs:18"
+    update_cache: yes
+- name: Install Podman
+  dnf:
+    name: 
+      - "podman"
+    update_cache: yes
+- name: Copy server files
+  copy:
+    src: ../../../../../server/{{ item }}
+    dest: /home/opc/server/
+    owner: opc
+  with_items:
+    - "index.js"
+    - "score.js"
+    - "server.js"
+    - "package.json"
+    - "package-lock.json"
+- name: Install dependencies
+  command: npm install
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc/server/
+- name: Add firewall port
+  firewalld:
+    zone: public
+    port: 3000/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+- name: Install pm2
+  command: npm install pm2 -g
+- name: Run Server App
+  command: pm2 -f start index.js
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc/server/
+- name: Pull coherence
+  command: podman pull ghcr.io/oracle/coherence-ce:23.03
+- name: does coherence exist
+  command: podman ps --all -f "name=coherence"
+  register: coherence_exist
+- name: rm coherence if exist
+  command: podman rm --force coherence
+  when: coherence_exist.stdout != ""
+- name: Run coherence
+  command: podman run --rm --name coherence -d -p 1408:1408 ghcr.io/oracle/coherence-ce:23.03

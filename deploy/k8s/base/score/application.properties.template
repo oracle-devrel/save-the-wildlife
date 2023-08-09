@@ -1,0 +1,26 @@
+spring.main.banner-mode=off
+server.port=8080
+
+management.endpoint.health.probes.enabled=true
+management.health.livenessState.enabled=true
+management.health.readinessState.enabled=true
+
+# Oracle DB
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@TEMPLATE_ADB_SERVICE?TNS_ADMIN=/wallet
+spring.datasource.username=ADMIN
+spring.datasource.password=TEMPLATE_ADB_PASSWORD
+
+# JPA
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+spring.jpa.hibernate.use-new-id-generator-mappings=false
+spring.jpa.hibernate.ddl-auto=update
+
+# UCP
+oracle.jdbc.fanEnabled=true
+spring.datasource.type=oracle.ucp.jdbc.PoolDataSource
+spring.datasource.oracleucp.sql-for-validate-connection=select * from dual
+spring.datasource.oracleucp.connection-pool-name=connectionPoolName1
+spring.datasource.oracleucp.initial-pool-size=5
+spring.datasource.oracleucp.min-pool-size=5
+spring.datasource.oracleucp.max-pool-size=10

@@ -1,0 +1,50 @@
+version: 0.1             
+component: build
+timeoutInSeconds: 1200
+failImmediatelyOnError: true
+shell: bash
+
+env:
+  exportedVariables:
+    - WS_SERVER_VERSION
+    - WEB_VERSION
+    - SCORE_VERSION
+
+steps:
+  - type: Command
+    name: "Install libraries"
+    command: |
+      yum update -y
+      yum install jq -y
+  - type: Command
+    name: "Set up server versions"
+    command: |
+      export WS_SERVER_VERSION=$(cat server/package.json | jq .version | tr -d '/"')
+      echo "WS_SERVER_VERSION: $WS_SERVER_VERSION"
+      export WEB_VERSION=$(cat web/package.json | jq .version | tr -d '/"')
+      echo "WEB_VERSION: $WEB_VERSION"
+      export SCORE_VERSION=$(grep "version = " score/build.gradle | cut -d "'" -f2)
+      echo "SCORE_VERSION: $SCORE_VERSION"
+  - type: Command
+    name: "Build ws-server"
+    command: |
+      npx zx scripts/build.mjs ws-server
+  - type: Command
+    name: "Build web"
+    command: |
+      npx zx scripts/build.mjs web
+  - type: Command
+    name: "Build score"
+    command: |
+      npx zx scripts/build.mjs score
+
+outputArtifacts:
+  - name: server
+    type: DOCKER_IMAGE
+    location: server:${WS_SERVER_VERSION}
+  - name: web
+    type: DOCKER_IMAGE
+    location: web:${WEB_VERSION}
+  - name: score
+    type: DOCKER_IMAGE
+    location: score:${SCORE_VERSION}
