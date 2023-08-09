@@ -1,0 +1,76 @@
+version: 0.1
+component: command
+timeoutInSeconds: 900
+failImmediatelyOnError: true
+shell: bash
+
+steps:
+  - type: Command
+    name: "Install nodejs"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      yum --disablerepo=ol7_oci_included install -y oracle-nodejs-release-el7 oracle-release-el7
+      yum --disablerepo=ol7_oci_included install -y nodejs
+  - type: Command
+    name: "Git Clone"
+    shell: bash
+    timeoutInSeconds: 100
+    command: |
+      git clone ${github_repo_url}
+  - type: Command
+    name: "Setup kube config"
+    shell: bash
+    timeoutInSeconds: 100
+    command: |
+      oci ce cluster create-kubeconfig --cluster-id ${cluster} \
+        --file $HOME/.kube/config --region ${region} --token-version 2.0.0  \
+        --kube-endpoint PUBLIC_ENDPOINT
+  - type: Command
+    name: "Custom Kustomize with versions"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      cd /workspace/oci-multiplayer
+      adb_wallet_password="$(openssl rand -base64 12)_$RANDOM"
+      oci db autonomous-database generate-wallet --autonomous-database-id ${adb_id} --file "/workspace/oci-multiplayer/deploy/k8s/base/score/wallet.zip" --password "$adb_wallet_password"
+  - type: Command
+    name: "Custom Kustomize with versions"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      cd /workspace/oci-multiplayer
+      redis_password=$(oci secrets secret-bundle get --secret-id ${redis_password_id} --query 'data."secret-bundle-content".content' | tr -d '\"' | base64 -d)
+      adb_admin_password=$(oci secrets secret-bundle get --secret-id ${adb_admin_password_id} --query 'data."secret-bundle-content".content' | tr -d '\"' | base64 -d)
+      npx zx scripts/kustom.mjs ${region_key} $redis_password $adb_admin_password ${adb_service}
+  - type: Command
+    name: "Create OCIR Secret"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      user_auth_token=$(oci secrets secret-bundle get --secret-id ${user_auth_token_id} --query 'data."secret-bundle-content".content' | tr -d '\"' | base64 -d)
+      kubectl delete secret ocir-secret --ignore-not-found
+      kubectl create secret docker-registry ocir-secret \
+        --docker-server=${region_key}.ocir.io \
+        --docker-username="${oci_namespace}/${ocir_user}" \
+        --docker-password="$user_auth_token" \
+        --docker-email=${ocir_user}
+  - type: Command
+    name: "Apply kustomization"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      kubectl apply -k ./oci-multiplayer/deploy/k8s/overlays/devops
+  - type: Command
+    name: "Wait for Load Balancer (sleep)"
+    shell: bash
+    timeoutInSeconds: 100
+    command: |
+      sleep 60
+  - type: Command
+    name: "Get Load Balancer IP address"
+    shell: bash
+    timeoutInSeconds: 100
+    command: |
+      LB_PUBLIC_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+      echo "http://$LB_PUBLIC_IP/"

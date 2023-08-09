@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "0.0.8",
+  "description": "OCI Multiplayer Server",
+  "repository": "https://github.com/vmleon/oci-multiplayer",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js | pino-pretty"
+  },
+  "type": "module",
+  "author": "Victor Martin Alvarez",
+  "license": "ISC",
+  "dependencies": {
+    "@godaddy/terminus": "^4.11.2",
+    "@oracle/coherence": "^1.2.1",
+    "@socket.io/redis-adapter": "^8.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1",
+    "pino": "^7.10.0",
+    "redis": "^4.6.4",
+    "short-uuid": "^4.2.2",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "pino-pretty": "^7.6.1"
+  }
+}

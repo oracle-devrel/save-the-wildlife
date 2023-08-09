@@ -1,0 +1,10 @@
+resources:
+  - score.yaml
+  - score-svc.yaml
+configMapGenerator:
+  - name: score-properties
+    files:
+      - application.properties
+  - name: wallet-zip
+    files:
+      - wallet.zip

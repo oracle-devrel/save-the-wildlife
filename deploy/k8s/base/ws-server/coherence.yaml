@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: coherence
+  name: coherence
+spec:
+  minReadySeconds: 30
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coherence
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: coherence
+    spec:
+      containers:
+        - image: ghcr.io/oracle/coherence-ce:23.03
+          name: coherence
+          readinessProbe:
+            tcpSocket:
+              port: 1408
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          ports:
+            - containerPort: 1408
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 521Mi
+      imagePullSecrets:
+        - name: ocir-secret

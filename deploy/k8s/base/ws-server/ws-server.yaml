@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ws-server
+  name: ws-server
+spec:
+  minReadySeconds: 100
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-server
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: ws-server
+    spec:
+      initContainers:
+      - name: wait-for-redis
+        image: redis
+        imagePullPolicy: IfNotPresent
+        args: [ 'sh', '-c', 'sleep 60s' ]
+      containers:
+        - image: ws-server
+          name: ws-server
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 521Mi
+          env:
+          - name: NODE_ENV
+            value: "production"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /usr/src/app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: ws-server-env
+      imagePullSecrets:
+        - name: ocir-secret

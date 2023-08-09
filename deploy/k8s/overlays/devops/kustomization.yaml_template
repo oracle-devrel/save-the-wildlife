@@ -1,0 +1,19 @@
+bases:
+  - "../../base/ingress"
+  - "../../base/web"
+  - "../../base/ws-server"
+  - "../../base/score"
+
+patchesStrategicMerge:
+  - "patch_server_replicas.yaml"
+
+images:
+- name: ws-server
+  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/server
+  newTag: WS_SERVER_VERSION
+- name: web
+  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/web
+  newTag: WEB_VERSION
+- name: score
+  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/score
+  newTag: SCORE_VERSION

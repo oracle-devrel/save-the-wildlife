@@ -1,0 +1,22 @@
+---
+- name: Install nginx
+  dnf:
+    name: nginx
+    update_cache: yes
+- name: Enable nginx
+  service:
+    name: nginx.service
+    state: started
+    enabled: yes
+- name: Copy web static files
+  copy:
+    src: ../../../../../web/dist/
+    dest: /usr/share/nginx/html/
+  notify: restart nginx
+- name: Add firewall ports
+  firewalld:
+    zone: public
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled

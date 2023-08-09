@@ -1,0 +1,5 @@
+region                = "REGION_NAME"
+tenancy_ocid          = "TENANCY_OCID"
+compartment_ocid      = "COMPARTMENT_OCID"
+public_subnet_id      = "PUBLIC_SUBNET_OCID"
+ci_private_ip         = "CI_PRIVATE_IP"

@@ -1,0 +1,5 @@
+instance_shape        = "VM.Standard.E4.Flex"
+region                = "REGION_NAME"
+tenancy_ocid          = "TENANCY_OCID"
+compartment_ocid      = "COMPARTMENT_OCID"
+ssh_public_key_path   = "PATH_TO_PUBLIC_KEY"
