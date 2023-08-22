@@ -25,6 +25,7 @@ const containersConfig = JSON.stringify([
   {
     displayName: "ServerContainer",
     imageUrl: serverImageURL,
+    environmentVariables: { ENABLE_COHERENCE_BACKEND: false },
     resourceConfig: {
       memoryLimitInGBs: 8,
       vcpusLimit: 1.5,
