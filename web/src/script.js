@@ -125,13 +125,13 @@ async function init() {
   // console.log("init: ",waternormals);
 
   const geometries = [
+    new THREE.SphereGeometry(), // Cube geometry for trash
     new THREE.BoxGeometry(), // Cube geometry for wildlife
-    boxModel.geometry, // Box GLTF for trash
   ];
 
   const materials = [
-    new THREE.MeshPhongMaterial({ color: 0x000000 }), // Green material for wildlife
-    new THREE.MeshPhongMaterial({ color: 0x654321 }), // material for trash
+    new THREE.MeshPhongMaterial({ color: 0x90EE90 }), // green material for wildlife
+    new THREE.MeshPhongMaterial({ color: 0xBB8E51 }), // brown material for trash
   ];
 
   //add music loader
