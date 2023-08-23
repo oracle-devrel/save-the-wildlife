@@ -23,7 +23,8 @@ let subClient;
 let cacheSession;
 
 // FIXME Flag to use coherence
-const ENABLE_COHERENCE_BACKEND = process.env.ENABLE_COHERENCE_BACKEND === "true";
+const ENABLE_COHERENCE_BACKEND =
+  process.env.ENABLE_COHERENCE_BACKEND === "true";
 
 // FIXME coherence security, probably TLS, password would be easier to begin with
 const COHERENCE_SERVICE_HOST = process.env.COHERENCE_SERVICE_HOST
@@ -35,7 +36,10 @@ const COHERENCE_SERVICE_PORT = process.env.COHERENCE_SERVICE_PORT
   : 1408;
 
 const coherenceAddress = `${COHERENCE_SERVICE_HOST}:${COHERENCE_SERVICE_PORT}`;
-logger.info(`Coherence URL: ${coherenceAddress}`);
+logger.info(`Coherence: ${ENABLE_COHERENCE_BACKEND ? "Enabled" : "Disabled"}`);
+if (ENABLE_COHERENCE_BACKEND) {
+  logger.info(`Coherence URL: ${coherenceAddress}`);
+}
 
 const ENABLE_REDIS_BACKEND = process.env.ENABLE_REDIS_BACKEND === "true";
 
@@ -77,7 +81,9 @@ if (ENABLE_REDIS_BACKEND) {
     start(httpServer, port, cacheSession, pubClient, subClient);
   });
 } else {
-  createCacheSession().then(() => { start(httpServer, port, cacheSession)});
+  createCacheSession().then(() => {
+    start(httpServer, port, cacheSession);
+  });
 }
 
 function onSignal() {
@@ -131,14 +137,19 @@ createTerminus(httpServer, {
 
 async function createCacheSession() {
   return new Promise((resolve, reject) => {
-    try {
-      const opts = new Options();
-      opts.address = coherenceAddress;
-      cacheSession = new Session(opts);
-      resolve(cacheSession);
-    } catch (err) {
-      logger.error(err.message);
-      reject(err.message);
+    if (ENABLE_COHERENCE_BACKEND) {
+      try {
+        const opts = new Options();
+        opts.address = coherenceAddress;
+        cacheSession = new Session(opts);
+        resolve(cacheSession);
+      } catch (err) {
+        logger.error(err.message);
+        reject(err.message);
+      }
+    } else {
+      logger.info("Coherence is disabled");
+      resolve(null);
     }
   });
 }

@@ -3,8 +3,8 @@ import fetch from "node-fetch";
 import pino from "pino";
 
 dotenv.config({ path: "./config/.env" });
-// FIXME change log level based on NODE_ENV
-const logger = pino();
+const isProduction = process.env.NODE_ENV === "production";
+const logger = pino({ level: isProduction ? "warn" : "debug" });
 
 let scoreFeatureFlag = true;
 
@@ -18,7 +18,8 @@ if (!SCORE_SERVICE_PORT) {
   scoreFeatureFlag = false;
   logger.error(`SCORE_SERVICE_PORT not defined`);
 }
-if (!scoreFeatureFlag) {
+
+if (scoreFeatureFlag) {
   const scoreServiceUrl = `${SCORE_SERVICE_HOST}:${SCORE_SERVICE_PORT}`;
   logger.info(`Connecting to Score on ${scoreServiceUrl}`);
 }
