@@ -32,7 +32,7 @@ public class CurrentScoreController {
     CurrentScoreDAO getByUuid(@PathVariable("uuid") String uuid) {
         logger.info("GET /api/score/" + uuid);
         CurrentScore score = currentScoreRepository.findByUuid(uuid).orElseThrow(() -> new NotAuthorizedOrNotFound());
-        return new CurrentScoreDAO(score.getUuid(),score.getName(), score.getScore() );
+        return new CurrentScoreDAO(score.getUuid(), score.getName(), score.getScore());
     }
 
     @PutMapping("/api/score/{uuid}")
@@ -49,15 +49,15 @@ public class CurrentScoreController {
         scoreFromStore.setName(body.getName());
         scoreFromStore.setUuid(uuid);
         CurrentScore saved = currentScoreRepository.save(scoreFromStore);
-        return new CurrentScoreDAO(saved.getUuid(),saved.getName(), saved.getScore() );
+        return new CurrentScoreDAO(saved.getUuid(), saved.getName(), saved.getScore());
     }
 
     @DeleteMapping("/api/score/{uuid}")
     @Transactional
     ResponseEntity<Void> deleteByUuid(@PathVariable("uuid") String uuid) {
         logger.info("DELETE /api/score/" + uuid);
-        CurrentScore currentScoreFromStore =
-                currentScoreRepository.findByUuid(uuid).orElseThrow(() -> new NotAuthorizedOrNotFound());
+        CurrentScore currentScoreFromStore = currentScoreRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotAuthorizedOrNotFound());
         Score scoreFromStore = scoreRepository.findByUuid(uuid).orElse(new Score(uuid,
                 currentScoreFromStore.getName(), 0L));
         if (currentScoreFromStore.getScore() > scoreFromStore.getScore()) {
