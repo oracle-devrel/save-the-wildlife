@@ -28,7 +28,7 @@ if (!localStorage.getItem("yourId")) {
   localStorage.setItem("yourId", short());
 }
 const yourId = localStorage.getItem("yourId");
-let playerName = localStorage.getItem("yourName") || "Default";
+let playerName;
 
 let renderer, scene, camera, sun, water;
 let canvas;
@@ -57,6 +57,7 @@ const createGameButton = document.getElementById("create-game-button");
 createGameButton.addEventListener("click", init);
 
 async function init() {
+  playerName = localStorage.getItem("yourName") || "Default";
   scene = new THREE.Scene();
 
   function fibonacciGenerator(maxTerm) {
@@ -130,8 +131,8 @@ async function init() {
   ];
 
   const materials = [
-    new THREE.MeshPhongMaterial({ color: 0x90EE90 }), // green material for wildlife
-    new THREE.MeshPhongMaterial({ color: 0xBB8E51 }), // brown material for trash
+    new THREE.MeshPhongMaterial({ color: 0x90ee90 }), // green material for wildlife
+    new THREE.MeshPhongMaterial({ color: 0xbb8e51 }), // brown material for trash
   ];
 
   //add music loader

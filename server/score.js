@@ -7,6 +7,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const logger = pino({ level: isProduction ? "warn" : "debug" });
 
 let scoreFeatureFlag = true;
+let scoreServiceUrl;
 
 const SCORE_SERVICE_HOST = process.env.SCORE_SERVICE_HOST;
 if (!SCORE_SERVICE_HOST) {
@@ -20,7 +21,8 @@ if (!SCORE_SERVICE_PORT) {
 }
 
 if (scoreFeatureFlag) {
-  const scoreServiceUrl = `${SCORE_SERVICE_HOST}:${SCORE_SERVICE_PORT}`;
+  scoreServiceUrl = `${SCORE_SERVICE_HOST}:${SCORE_SERVICE_PORT}`;
+  logger.info({ scoreServiceUrl });
   logger.info(`Connecting to Score on ${scoreServiceUrl}`);
 }
 
@@ -32,7 +34,8 @@ export async function postCurrentScore(playerId, playerName, operationType) {
       name: playerName,
     });
     // FIXME thrown exceptions will kill the process!
-    await fetch(`http://${scoreServiceUrl}/api/score/${playerId}`, {
+    const urlRequest = `http://${scoreServiceUrl}/api/score/${playerId}`;
+    await fetch(urlRequest, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: stringifyBody,
