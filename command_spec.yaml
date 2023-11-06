@@ -31,7 +31,7 @@ steps:
     shell: bash
     timeoutInSeconds: 300
     command: |
-      cd /workspace/https://github.com/WSPluta/save-the-wildlife.git
+      cd /workspace/save-the-wildlife
       adb_wallet_password="$(openssl rand -base64 12)_$RANDOM"
       oci db autonomous-database generate-wallet --autonomous-database-id ${adb_id} --file "/workspace/save-the-wildlife/deploy/k8s/base/score/wallet.zip" --password "$adb_wallet_password"
   - type: Command
