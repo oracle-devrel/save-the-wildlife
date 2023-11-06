@@ -9,11 +9,11 @@ patchesStrategicMerge:
 
 images:
 - name: ws-server
-  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/oci_multiplayer/server
+  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/save-the-wildlife/server
   newTag: SERVER_TEMPLATE_VERSION
 - name: web
-  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/oci_multiplayer/web
+  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/save-the-wildlife/web
   newTag: WEB_TEMPLATE_VERSION
 - name: score
-  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/oci_multiplayer/score
+  newName: REGION_KEY.ocir.io/TENANCY_NAMESPACE/save-the-wildlife/score
   newTag: SCORE_TEMPLATE_VERSION
