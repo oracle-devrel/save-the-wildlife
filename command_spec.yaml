@@ -31,9 +31,9 @@ steps:
     shell: bash
     timeoutInSeconds: 300
     command: |
-      cd /workspace/save-the-wildlife
+      cd /workspace/https://github.com/WSPluta/save-the-wildlife.git
       adb_wallet_password="$(openssl rand -base64 12)_$RANDOM"
-      oci db autonomous-database generate-wallet --autonomous-database-id ${adb_id} --file "/workspace/oci-multiplayer/deploy/k8s/base/score/wallet.zip" --password "$adb_wallet_password"
+      oci db autonomous-database generate-wallet --autonomous-database-id ${adb_id} --file "/workspace/save-the-wildlife/deploy/k8s/base/score/wallet.zip" --password "$adb_wallet_password"
   - type: Command
     name: "Custom Kustomize with versions"
     shell: bash
@@ -60,7 +60,7 @@ steps:
     shell: bash
     timeoutInSeconds: 300
     command: |
-      kubectl apply -k ./oci-multiplayer/deploy/k8s/overlays/devops
+      kubectl apply -k ./save-the-wildlife/deploy/k8s/overlays/devops
   - type: Command
     name: "Wait for Load Balancer (sleep)"
     shell: bash
