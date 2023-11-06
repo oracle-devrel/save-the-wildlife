@@ -13,6 +13,7 @@ import {
   getRegions,
   getTenancyId,
   searchCompartmentIdByName,
+  listAdbDatabasesbyname,
 } from "./lib/oci.mjs";
 import { createSelfSignedCert } from "./lib/tls.mjs";
 import {
@@ -140,13 +141,19 @@ async function adbDetails() {
     "Autonomous Database password"
   );
 
+  const adbDisplayName = await listAdbDatabasesbyname(adbName, adbCompartmentId);
+
+
   properties = {
     ...properties,
     adbCompartmentId,
     adbCompartmentName,
     adbName,
     adbPassword,
+    adbDisplayName,
   };
+//   console.log("Properties:", properties);
+
 }
 
 async function printRegionNames(regions) {

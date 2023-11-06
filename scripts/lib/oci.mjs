@@ -46,6 +46,38 @@ export async function listAdbDatabases(compartmentId) {
   }
 }
 
+export async function listAdbDatabasesbyname(adbName,compartmentId) {
+    try {
+        const { stdout, exitCode, stderr } = await $`oci db autonomous-database list --all --compartment-id ${compartmentId} --display-name ${adbName}`;
+        if (exitCode !== 0) {
+            console.error("Error:", stderr);
+            return; 
+        }
+
+        const response = JSON.parse(stdout.trim());
+        // console.log("Full API Response:", response);
+
+        const connectionStrings = response.data[0]['connection-strings'];
+
+        if (typeof connectionStrings === 'object' && connectionStrings !== null) {
+
+            // Finding the 'HIGH' consumer group in profiles array
+            const highConsumerGroupDisplayName = connectionStrings.profiles.find(profile => profile['consumer-group'] === "HIGH");
+            if (highConsumerGroupDisplayName) {
+                const adbDisplayName = highConsumerGroupDisplayName['display-name'];
+                // console.log("adbDisplayName:", adbDisplayName);
+                return adbDisplayName;
+            } else {
+                console.error("Error: No 'HIGH' consumer group found in the response.");
+            }
+        } else {
+            console.error("Error: 'connection-strings' is not an object in the response.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 export async function downloadAdbWallet(adbId, walletFilePath, walletPassword) {
   try {
     const { stdout, exitCode, stderr } =
@@ -123,6 +155,27 @@ export async function searchCompartmentIdByName(compartmentName) {
     exitWithError(error.stderr);
   }
 }
+
+export async function searchAdbIdByName(adbName, compartmentId) {
+    if (!adbName) {
+      exitWithError("ADB name required");
+    }
+    try {
+      const { stdout, exitCode, stderr } =
+        await $`oci db autonomous-database list --compartment-id ${compartmentId} --query "data[?\"display-name\"=='${adbName}'].id"`;
+      if (exitCode !== 0) {
+        exitWithError(stderr);
+      }
+      const adbIds = JSON.parse(stdout.trim());
+      if (adbIds.length === 0) {
+        exitWithError("ADB name not found");
+      }
+      const adbId = adbIds[0];
+      return adbId;
+    } catch (error) {
+      exitWithError(error.stderr);
+    }
+  }
 
 export async function uploadApiKeyFile(userId, publicKeyPath) {
   if (!userId) {
