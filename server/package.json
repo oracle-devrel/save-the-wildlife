@@ -2,7 +2,7 @@
   "name": "server",
   "version": "0.0.8",
   "description": "OCI Multiplayer Server",
-  "repository": "https://github.com/vmleon/oci-multiplayer",
+  "repository": "https://github.com/oracle-devrel/save-the-wildlife",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js | pino-pretty"
