@@ -3,6 +3,7 @@ bases:
   - "../../base/web"
   - "../../base/ws-server"
   - "../../base/score"
+  - "../../base/grafana"
 
 patchesStrategicMerge:
   - "patch_server_replicas.yaml"

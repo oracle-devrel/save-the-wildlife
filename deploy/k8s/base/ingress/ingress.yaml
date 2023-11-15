@@ -16,6 +16,13 @@ spec:
             name: ws-server
             port:
               number: 3000
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3001
       - path: /api
         pathType: Prefix
         backend:
