@@ -9,6 +9,7 @@
   },
   "type": "module",
   "author": "Victor Martin Alvarez",
+  "product owner": "Wojciech Pluta",
   "license": "ISC",
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
