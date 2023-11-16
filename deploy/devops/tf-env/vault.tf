@@ -4,6 +4,11 @@ resource "oci_kms_vault" "vault_devops" {
   vault_type     = "DEFAULT" // VIRTUAL_PRIVATE, DEFAULT
 }
 
+resource "time_sleep" "wait_for_vault" {
+  depends_on = [oci_kms_vault.vault_devops]
+  create_duration = "5m"
+}
+
 resource "oci_kms_key" "key_devops" {
   compartment_id = var.compartment_ocid
   display_name   = "master_key_devops_${random_string.deploy_id.result}"
