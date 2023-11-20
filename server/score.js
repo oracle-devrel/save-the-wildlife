@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 import fetch from "node-fetch";
 import pino from "pino";
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config({ path: "../.config/.env" });
 const isProduction = process.env.NODE_ENV === "production";
 const logger = pino({ level: isProduction ? "warn" : "debug" });
 

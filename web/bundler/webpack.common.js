@@ -1,25 +1,41 @@
+// Import necessary plugins and modules
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
+// Export the webpack configuration
 module.exports = {
+  // Entry point for the application, the main JavaScript file
   entry: path.resolve(__dirname, '../src/script.js'),
+
+  // Output configuration for the bundled files
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, '../dist'),
   },
+
+  // Source map generation for better debugging
   devtool: 'source-map',
+
+  // Array of plugins to enhance the webpack build process
   plugins: [
+    // CopyWebpackPlugin for copying static assets to the 'dist' directory
     new CopyWebpackPlugin({
-      patterns: [{from: path.resolve(__dirname, '../static')}],
+      patterns: [{ from: path.resolve(__dirname, '../static') }],
     }),
+
+    // HtmlWebpackPlugin for generating an HTML file from a template
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../src/index.html'),
       minify: true,
     }),
+
+    // MiniCSSExtractPlugin for extracting CSS into separate files
     new MiniCSSExtractPlugin(),
   ],
+
+  // Module configuration for defining how different file types should be processed
   module: {
     rules: [
       // HTML
@@ -75,11 +91,11 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'assets/menu/'
-            }
-          }
-        ]
-      }  
+              outputPath: 'assets/menu/',
+            },
+          },
+        ],
+      },
     ],
   },
 };

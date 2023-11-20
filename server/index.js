@@ -7,7 +7,7 @@ import pino from "pino";
 import * as dotenv from "dotenv";
 import { start } from "./server.js";
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config({ path: "../.config/.env" });
 
 const port = process.env.PORT | 3000;
 const isProduction = process.env.NODE_ENV === "production";

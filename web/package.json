@@ -2,7 +2,7 @@
   "name": "web",
   "version": "0.0.8",
   "description": "OCI Multiplayer Web",
-  "repository": "https://github.com/vmleon/oci-multiplayer",
+  "repository": "https://github.com/oracle-devrel/save-the-wildlife",
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
@@ -26,11 +26,11 @@
     "shortid": "^2.2.16",
     "socket.io-client": "^4.7.1",
     "style-loader": "^2.0.0",
-    "three": "^0.154.0",
+    "three": "^0.158.0",
     "throttle-debounce": "^3.0.1",
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2",
+    "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.7.3"
   },
   "devDependencies": {

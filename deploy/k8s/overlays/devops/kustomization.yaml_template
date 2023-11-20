@@ -9,11 +9,11 @@ patchesStrategicMerge:
 
 images:
 - name: ws-server
-  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/server
+  newName: REGION_KEY.ocir.io/NAMESPACE/save-the-wildlife/server
   newTag: WS_SERVER_VERSION
 - name: web
-  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/web
+  newName: REGION_KEY.ocir.io/NAMESPACE/save-the-wildlife/web
   newTag: WEB_VERSION
 - name: score
-  newName: REGION_KEY.ocir.io/NAMESPACE/oci-multiplayer/score
+  newName: REGION_KEY.ocir.io/NAMESPACE/save-the-wildlife/score
   newTag: SCORE_VERSION

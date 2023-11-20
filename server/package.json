@@ -1,14 +1,15 @@
 {
   "name": "server",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "OCI Multiplayer Server",
-  "repository": "https://github.com/vmleon/oci-multiplayer",
+  "repository": "https://github.com/oracle-devrel/save-the-wildlife",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js | pino-pretty"
   },
   "type": "module",
   "author": "Victor Martin Alvarez",
+  "product owner": "Wojciech Pluta",
   "license": "ISC",
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
