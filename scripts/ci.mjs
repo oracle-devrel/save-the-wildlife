@@ -18,8 +18,8 @@ const {
   webVersion,
 } = properties;
 
-const serverImageURL = `${containerRegistryURL}/${namespace}/oci_multiplayer/server:${serverVersion}`;
-const webImageURL = `${containerRegistryURL}/${namespace}/oci_multiplayer/web:${webVersion}`;
+const serverImageURL = `${containerRegistryURL}/${namespace}/save-the-wildlife/server:${serverVersion}`;
+const webImageURL = `${containerRegistryURL}/${namespace}/save-the-wildlife/web:${webVersion}`;
 
 const containersConfig = JSON.stringify([
   {

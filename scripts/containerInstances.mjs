@@ -56,8 +56,8 @@ const createContainerInstances = async (attributes) => {
     "containerRegistryURL": containerRegistryURL,
     "containerRegistryUser": containerRegistryUser,
     "region": "xxx",
-    "servercontainerURL": "xxx.ocir.io/xxx/oci_multiplayer/server:0.0.8",
-    "webcontainerURL": "xxx.ocir.io/xxx/oci_multiplayer/web:0.0.8",
+    "servercontainerURL": "xxx.ocir.io/xxx/save-the-wildlife/server:0.0.8",
+    "webcontainerURL": "xxx.ocir.io/xxx/save-the-wildlife/web:0.0.8",
   };
 
   const vnicsArgs = [

@@ -18,7 +18,7 @@ const { containerRegistryURL, namespace } = properties;
 const { a, _ } = argv;
 const [action] = _;
 
-const project = "oci_multiplayer";
+const project = "save-the-wildlife";
 
 if (action === "web") {
   await releaseNpm("web");
