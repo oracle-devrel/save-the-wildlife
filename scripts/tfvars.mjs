@@ -147,7 +147,7 @@ async function devopsTFvars() {
 
   const githubUser = githubURL.split("/").reverse()[1];
 
-  const githubURLEscaped = githubURL.replaceAll("/", "\\/");
+  const githubURLEscaped = githubURL.replace(/\//g, "\\/");
   const replaceCmdURL = `s/GITHUB_REPOSITORY_URL/${githubURLEscaped}/`;
 
   try {
