@@ -16,7 +16,7 @@ module "oke" {
   assign_dns = true
   create_vcn = true
   vcn_cidrs = ["10.22.0.0/16"]
-  vcn_dns_label = "oke-${random_string.deploy_id.result}"
+  vcn_dns_label = "oke"
   vcn_name = "oke-${random_string.deploy_id.result}-vcn"
   lockdown_default_seclist = true
   allow_rules_public_lb ={
