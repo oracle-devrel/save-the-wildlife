@@ -29,6 +29,7 @@ module "oke" {
   allow_worker_ssh_access = true
   control_plane_allowed_cidrs = ["0.0.0.0/0"]
   control_plane_is_public = true
+  assign_public_ip_to_control_plane = true
   enable_waf = false
   load_balancers = "public"
   preferred_load_balancer = "public"
