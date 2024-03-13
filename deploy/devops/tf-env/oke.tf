@@ -1,28 +1,71 @@
-module "oke-quickstart" {
-  source = "github.com/oracle-quickstart/terraform-oci-oke-quickstart?ref=0.9.2"
+locals {
+  cluster_k8s_latest_version = reverse(sort(data.oci_containerengine_cluster_option.oke.kubernetes_versions))[0]
+}
 
-
-  providers = {
-    oci             = oci
-    oci.home_region = oci.home_region
+module "oke" {
+  source  = "oracle-terraform-modules/oke/oci"
+  version = "5.1.3"
+  region = var.region
+  compartment_id = var.compartment_ocid
+  # IAM - Policies
+  create_iam_autoscaler_policy = "never"
+  create_iam_kms_policy = "never"
+  create_iam_operator_policy = "never"
+  create_iam_worker_policy = "never"
+  # Network module - VCN
+  assign_dns = true
+  create_vcn = true
+  vcn_cidrs = ["10.22.0.0/16"]
+  vcn_dns_label = "oke-${random_string.deploy_id.result}"
+  vcn_name = "oke-${random_string.deploy_id.result}-vcn"
+  lockdown_default_seclist = true
+  allow_rules_public_lb ={
+    "Allow TCP ingress to public load balancers for SSL traffic from anywhere" : { protocol = 6, port = 443, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
+    "Allow TCP ingress to public load balancers for HTTP traffic from anywhere" : { protocol = 6, port = 80, source="0.0.0.0/0", source_type="CIDR_BLOCK"}
+  }
+  # Network module - security
+  allow_node_port_access = true
+  allow_worker_internet_access = true
+  allow_worker_ssh_access = true
+  control_plane_allowed_cidrs = ["0.0.0.0/0"]
+  control_plane_is_public = true
+  enable_waf = false
+  load_balancers = "public"
+  preferred_load_balancer = "public"
+  worker_is_public = false
+  # Cluster module
+  create_cluster = true
+  cluster_name = "oke-${random_string.deploy_id.result}"
+  cluster_type = "basic"
+  cni_type = "flannel"
+  kubernetes_version = local.cluster_k8s_latest_version
+  pods_cidr          = "10.244.0.0/16"
+  services_cidr      = "10.96.0.0/16"
+  use_signed_images  = false
+  use_defined_tags = false
+  # Workers
+  worker_pool_mode = "node-pool"
+  worker_pool_size = 2
+  worker_image_type = "oke"
+  worker_pools = {
+    np1 = {
+      shape = "VM.Standard.E3.Flex",
+      ocpus = 1,
+      memory = 32,
+      boot_volume_size = 120,
+      create = true
+    }
   }
 
-  tenancy_ocid     = var.tenancy_ocid
-  compartment_ocid = var.compartment_ocid
-  region           = var.region
+  # Bastion
+  create_bastion = false
 
-  app_name = "DevOps ${random_string.deploy_id.result}"
+  # Operator
+  create_operator = false
 
-  metrics_server_enabled = false
+  providers = {
+    oci = oci
+    oci.home = oci.home_region
+  }
 
-  # OKE Node Pool 1
-  node_pool_cni_type_1                 = "FLANNEL_OVERLAY"
-  node_pool_autoscaler_enabled_1       = false
-  node_pool_initial_num_worker_nodes_1 = 2
-  node_pool_max_num_worker_nodes_1     = 3
-  node_pool_instance_shape_1           = { "instanceShape" = "VM.Standard.E4.Flex", "ocpus" = 1, "memory" = 32 }
-  node_pool_boot_volume_size_in_gbs_1  = 120
-
-  # VCN for OKE arguments
-  vcn_cidr_blocks = "10.22.0.0/16"
 }

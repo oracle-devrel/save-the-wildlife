@@ -20,3 +20,11 @@ data "oci_identity_compartment" "compartment" {
 data "oci_identity_users" "users" {
   compartment_id = var.tenancy_ocid
 }
+
+data "oci_containerengine_cluster_option" "oke" {
+  cluster_option_id = "all"
+}
+
+data "oci_containerengine_cluster_kube_config" "kubeconfig" {
+  cluster_id = module.oke.cluster_id
+}

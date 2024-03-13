@@ -3,12 +3,12 @@ output "devops_ons_topic_ocid" {
 }
 
 output "kubeconfig" {
-  value     = module.oke-quickstart.kubeconfig
+  value     = data.oci_containerengine_cluster_kube_config.kubeconfig.content
   sensitive = true
 }
 
 output "oke_cluster_ocid" {
-  value = module.oke-quickstart.oke_cluster_ocid
+  value = module.oke.cluster_id
 }
 
 output "github_access_token_secret_ocid" {
