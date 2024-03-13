@@ -3,7 +3,7 @@ output "devops_ons_topic_ocid" {
 }
 
 output "kubeconfig" {
-  value     = data.oci_containerengine_cluster_kube_config.kubeconfig.content
+  value     = module.oke.cluster_kubeconfig
   sensitive = true
 }
 
