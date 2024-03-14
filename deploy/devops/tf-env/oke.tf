@@ -21,13 +21,16 @@ module "oke" {
       create = "never"
     }
     cp = {
-      create  = "always"
+      create  = "always",
+      cidr = "10.22.0.8/29"
     }
     pub_lb = {
-      create  = "always"
+      create  = "always",
+      cidr = "10.22.128.0/27"
     }
     workers = {
-      create  = "always"
+      create  = "always",
+      cidr = "10.22.144.0/20"
     }
     int_lb = {
       create  = "never"
