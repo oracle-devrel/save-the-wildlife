@@ -14,8 +14,26 @@ module "oke" {
   create_iam_worker_policy = "never"
   # Network module - VCN
   subnets = {
+    bastion = {
+      create = "never"
+    }
     operator = {
       create = "never"
+    }
+    cp = {
+      create  = "always"
+    }
+    pub_lb = {
+      create  = "always"
+    }
+    workers = {
+      create  = "always"
+    }
+    int_lb = {
+      create  = "never"
+    }
+    pods = {
+      create  = "never"
     }
   }
   nsgs = {
