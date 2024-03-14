@@ -40,7 +40,13 @@ module "oke" {
     }
   }
   nsgs = {
+    bastion = {create = "never"}
     operator = { create = "never" }
+    cp       = { create = "always"}
+    int_lb   = { create = "never" }
+    pub_lb   = { create = "always" }
+    workers  = { create = "always"}
+    pods     = { create = "never" }
   }
   assign_dns = true
   create_vcn = true
