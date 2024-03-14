@@ -13,6 +13,14 @@ module "oke" {
   create_iam_operator_policy = "never"
   create_iam_worker_policy = "never"
   # Network module - VCN
+  subnets = {
+    operator = {
+      create = "never"
+    }
+  }
+  nsgs = {
+    operator = { create = "never" }
+  }
   assign_dns = true
   create_vcn = true
   vcn_cidrs = ["10.22.0.0/16"]
@@ -21,7 +29,8 @@ module "oke" {
   lockdown_default_seclist = true
   allow_rules_public_lb ={
     "Allow TCP ingress to public load balancers for SSL traffic from anywhere" : { protocol = 6, port = 443, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
-    "Allow TCP ingress to public load balancers for HTTP traffic from anywhere" : { protocol = 6, port = 80, source="0.0.0.0/0", source_type="CIDR_BLOCK"}
+    "Allow TCP ingress to public load balancers for HTTP traffic from anywhere" : { protocol = 6, port = 80, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
+    "Allow TCP egress from public load balancers to worker nodes for health checks" : {direction = "EGRESS", protocol = 6, destination = "10.22.144.0/20", destination_type="CIDR_BLOCK"}
   }
   # Network module - security
   allow_node_port_access = true
@@ -68,5 +77,5 @@ module "oke" {
     oci = oci
     oci.home = oci.home_region
   }
-
 }
+
