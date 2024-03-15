@@ -71,6 +71,7 @@ module "oke" {
       cidr = local.cp_subnet_cidr
     }
     pub_lb = {
+      create = "never",
       id = oci_core_subnet.pub_lb_subnet.id
     }
     workers = {
