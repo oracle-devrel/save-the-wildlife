@@ -4,6 +4,7 @@ locals {
   workers_subnet_cidr = "10.22.144.0/20"
   cp_subnet_cidr = "10.22.0.8/29"
   vcn_cidr = "10.22.0.0/16"
+  my_count = 1
 }
 
 resource "oci_core_vcn" "oke_vcn" {
@@ -11,11 +12,12 @@ resource "oci_core_vcn" "oke_vcn" {
   cidr_blocks = [local.vcn_cidr]
   display_name = "oke-${random_string.deploy_id.result}-vcn"
   dns_label = "oke"
+  count = local.my_count
 }
 
 resource "oci_core_security_list" "pub_lb_sl" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.oke_vcn.id
+  vcn_id         = oci_core_vcn.oke_vcn.0.id
   ingress_security_rules {
     protocol = "6"
     source   = "0.0.0.0/0"
@@ -41,7 +43,7 @@ resource "oci_core_security_list" "pub_lb_sl" {
 resource "oci_core_subnet" "pub_lb_subnet" {
   cidr_block     = local.lb_subnet_cidr
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.oke_vcn.id
+  vcn_id         = oci_core_vcn.oke_vcn.0.id
   prohibit_public_ip_on_vnic = false
   dns_label = "plb"
   display_name = "pub_lb"
@@ -94,7 +96,7 @@ module "oke" {
     pods     = { create = "never" }
   }
   create_vcn = false
-  vcn_id = oci_core_vcn.oke_vcn.id
+  vcn_id = oci_core_vcn.oke_vcn.0.id
   # Network module - security
   allow_node_port_access = true
   allow_worker_internet_access = true
