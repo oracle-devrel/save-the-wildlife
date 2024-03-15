@@ -71,7 +71,7 @@ module "oke" {
       cidr = local.cp_subnet_cidr
     }
     pub_lb = {
-      create  = "never"
+      id = oci_core_subnet.pub_lb_subnet.id
     }
     workers = {
       create  = "always",
@@ -140,7 +140,5 @@ module "oke" {
     oci = oci
     oci.home = oci.home_region
   }
-
-  depends_on = [oci_core_vcn.oke_vcn]
 }
 
