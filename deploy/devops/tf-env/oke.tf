@@ -1,5 +1,55 @@
 locals {
   cluster_k8s_latest_version = reverse(sort(data.oci_containerengine_cluster_option.oke.kubernetes_versions))[0]
+  lb_subnet_cidr = "10.22.128.0/27"
+  workers_subnet_cidr = "10.22.144.0/20"
+  cp_subnet_cidr = "10.22.0.8/29"
+  vcn_cidr = "10.22.0.0/16"
+}
+
+resource "oci_core_vcn" "oke_vcn" {
+  compartment_id = var.compartment_ocid
+  cidr_blocks = [local.vcn_cidr]
+  display_name = "oke-${random_string.deploy_id.result}-vcn"
+  dns_label = "oke"
+}
+
+resource "oci_core_security_list" "pub_lb_sl" {
+  compartment_id = var.compartment_ocid
+  vcn_id         = oci_core_vcn.oke_vcn.id
+  ingress_security_rules {
+    protocol = "6"
+    source   = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    description = "Allow HTTP for all load balancers"
+    tcp_options {
+      destination_port_range {
+        max = 80
+        min = 80
+      }
+    }
+  }
+  egress_security_rules {
+    destination = local.workers_subnet_cidr
+    protocol    = "6"
+    destination_type = "CIDR_BLOCK"
+    description = "Allow OCI load balancer or network load balancer to communicate with kube-proxy on worker nodes."
+    tcp_options {
+      destination_port_range {
+        max = 10256
+        min = 10256
+      }
+    }
+  }
+}
+
+resource "oci_core_subnet" "pub_lb_subnet" {
+  cidr_block     = local.lb_subnet_cidr
+  compartment_id = var.compartment_ocid
+  vcn_id         = oci_core_vcn.oke_vcn.id
+  prohibit_public_ip_on_vnic = false
+  dns_label = "plb"
+  display_name = "pub_lb"
+  security_list_ids = [oci_core_security_list.pub_lb_sl.id]
 }
 
 module "oke" {
@@ -22,15 +72,14 @@ module "oke" {
     }
     cp = {
       create  = "always",
-      cidr = "10.22.0.8/29"
+      cidr = local.cp_subnet_cidr
     }
     pub_lb = {
-      create  = "always",
-      cidr = "10.22.128.0/27"
+      create  = "never"
     }
     workers = {
       create  = "always",
-      cidr = "10.22.144.0/20"
+      cidr = local.workers_subnet_cidr
     }
     int_lb = {
       create  = "never"
@@ -44,21 +93,12 @@ module "oke" {
     operator = { create = "never" }
     cp       = { create = "always"}
     int_lb   = { create = "never" }
-    pub_lb   = { create = "always" }
+    pub_lb   = { create = "never" }
     workers  = { create = "always"}
     pods     = { create = "never" }
   }
-  assign_dns = true
-  create_vcn = true
-  vcn_cidrs = ["10.22.0.0/16"]
-  vcn_dns_label = "oke"
-  vcn_name = "oke-${random_string.deploy_id.result}-vcn"
-  lockdown_default_seclist = true
-  allow_rules_public_lb ={
-    "Allow TCP ingress to public load balancers for SSL traffic from anywhere" : { protocol = 6, port = 443, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
-    "Allow TCP ingress to public load balancers for HTTP traffic from anywhere" : { protocol = 6, port = 80, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
-    "Allow TCP egress from public load balancers to worker nodes for health checks" : {protocol = 6, port=-1, source = "10.22.144.0/20", source_type="CIDR_BLOCK"}
-  }
+  create_vcn = false
+  vcn_id = oci_core_vcn.oke_vcn.id
   # Network module - security
   allow_node_port_access = true
   allow_worker_internet_access = true
