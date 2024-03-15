@@ -22,10 +22,8 @@ resource "oci_core_security_list" "pub_lb_sl" {
     source_type = "CIDR_BLOCK"
     description = "Allow HTTP for all load balancers"
     tcp_options {
-      destination_port_range {
-        max = 80
-        min = 80
-      }
+      max = 80
+      min = 80
     }
   }
   egress_security_rules {
@@ -34,10 +32,8 @@ resource "oci_core_security_list" "pub_lb_sl" {
     destination_type = "CIDR_BLOCK"
     description = "Allow OCI load balancer or network load balancer to communicate with kube-proxy on worker nodes."
     tcp_options {
-      destination_port_range {
-        max = 10256
-        min = 10256
-      }
+      max = 10256
+      min = 10256
     }
   }
 }
