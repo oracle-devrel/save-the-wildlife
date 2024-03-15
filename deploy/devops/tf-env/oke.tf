@@ -6,48 +6,6 @@ locals {
   vcn_cidr = "10.22.0.0/16"
 }
 
-resource "oci_core_vcn" "oke_vcn" {
-  compartment_id = var.compartment_ocid
-  cidr_blocks = [local.vcn_cidr]
-  display_name = "oke-${random_string.deploy_id.result}-vcn"
-  dns_label = "oke"
-}
-
-resource "oci_core_security_list" "pub_lb_sl" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.oke_vcn.id
-  ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
-    source_type = "CIDR_BLOCK"
-    description = "Allow HTTP for all load balancers"
-    tcp_options {
-      max = 80
-      min = 80
-    }
-  }
-  egress_security_rules {
-    destination = local.workers_subnet_cidr
-    protocol    = "6"
-    destination_type = "CIDR_BLOCK"
-    description = "Allow OCI load balancer or network load balancer to communicate with kube-proxy on worker nodes."
-    tcp_options {
-      max = 10256
-      min = 10256
-    }
-  }
-}
-
-resource "oci_core_subnet" "pub_lb_subnet" {
-  cidr_block     = local.lb_subnet_cidr
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.oke_vcn.id
-  prohibit_public_ip_on_vnic = false
-  dns_label = "plb"
-  display_name = "pub_lb"
-  security_list_ids = [oci_core_security_list.pub_lb_sl.id]
-}
-
 module "oke" {
   source  = "oracle-terraform-modules/oke/oci"
   version = "5.1.3"
@@ -71,8 +29,8 @@ module "oke" {
       cidr = local.cp_subnet_cidr
     }
     pub_lb = {
-      create = "never",
-      id = oci_core_subnet.pub_lb_subnet.id
+      create  = "always",
+      cidr = local.lb_subnet_cidr
     }
     workers = {
       create  = "always",
@@ -94,8 +52,16 @@ module "oke" {
     workers  = { create = "always"}
     pods     = { create = "never" }
   }
-  create_vcn = false
-  vcn_id = oci_core_vcn.oke_vcn.id
+  assign_dns = true
+  create_vcn = true
+  vcn_cidrs = [local.vcn_cidr]
+  vcn_dns_label = "oke"
+  vcn_name = "oke-${random_string.deploy_id.result}-vcn"
+  lockdown_default_seclist = true
+  allow_rules_public_lb ={
+    "Allow TCP ingress to public load balancers for HTTPS traffic from anywhere" : { protocol = 6, port = 443, source="0.0.0.0/0", source_type="CIDR_BLOCK"},
+    "Allow TCP ingress to public load balancers for HTTP traffic from anywhere" : { protocol = 6, port = 80, source="0.0.0.0/0", source_type="CIDR_BLOCK"}
+  }
   # Network module - security
   allow_node_port_access = true
   allow_worker_internet_access = true
@@ -141,5 +107,19 @@ module "oke" {
     oci = oci
     oci.home = oci.home_region
   }
+}
+
+resource "null_resource" "add_sec_rules_lb" {
+
+  provisioner "local-exec" {
+    command = "chmod +x ./pub_lb_sec.sh && ./pub_lb_sec.sh"
+    environment = {
+      PUB_LB_SUBNET_ID = module.oke.pub_lb_subnet_id
+    }
+    working_dir = path.module
+  }
+
+  depends_on = [module.oke]
+  count = 0
 }
 
