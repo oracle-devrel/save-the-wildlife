@@ -140,5 +140,7 @@ module "oke" {
     oci = oci
     oci.home = oci.home_region
   }
+
+  depends_on = [oci_core_vcn.oke_vcn]
 }
 
