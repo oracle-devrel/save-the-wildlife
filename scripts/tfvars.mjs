@@ -9,8 +9,6 @@ import {
 } from "./lib/oci.mjs";
 import { setVariableFromEnvOrPrompt, exitWithError } from "./lib/utils.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 const { _ } = argv;

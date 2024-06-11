@@ -23,8 +23,6 @@ import {
 } from "./lib/container.mjs";
 import { getVersionGradle } from "./lib/gradle.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 const ce = await whichContainerEngine();
@@ -141,8 +139,10 @@ async function adbDetails() {
     "Autonomous Database password"
   );
 
-  const adbDisplayName = await listAdbDatabasesbyname(adbName, adbCompartmentId);
-
+  const adbDisplayName = await listAdbDatabasesbyname(
+    adbName,
+    adbCompartmentId
+  );
 
   properties = {
     ...properties,
@@ -152,8 +152,7 @@ async function adbDetails() {
     adbPassword,
     adbDisplayName,
   };
-//   console.log("Properties:", properties);
-
+  //   console.log("Properties:", properties);
 }
 
 async function printRegionNames(regions) {
