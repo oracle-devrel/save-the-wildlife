@@ -4,8 +4,6 @@ import { exitWithError, getVersion, readEnvJson } from "./lib/utils.mjs";
 import { getVersionGradle } from "./lib/gradle.mjs";
 import { downloadAdbWallet, listAdbDatabases } from "./lib/oci.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 const {

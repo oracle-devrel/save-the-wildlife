@@ -8,8 +8,6 @@ import {
 import { bump } from "./lib/npm.mjs";
 import { bumpGradle, getVersionGradle } from "./lib/gradle.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 let properties = await readEnvJson();

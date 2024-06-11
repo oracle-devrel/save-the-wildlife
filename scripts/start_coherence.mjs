@@ -3,8 +3,6 @@
 import { exitWithError } from "./lib/utils.mjs";
 import { whichContainerEngine } from "./lib/container.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 const containerName = "coherence_multiplayer";

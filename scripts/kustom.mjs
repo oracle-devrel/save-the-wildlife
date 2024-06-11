@@ -4,8 +4,6 @@ import { getNpmVersion } from "./lib/npm.mjs";
 import { getNamespace } from "./lib/oci.mjs";
 import { exitWithError } from "./lib/utils.mjs";
 
-const shell = process.env.SHELL | "/bin/zsh";
-$.shell = shell;
 $.verbose = false;
 
 const { _ } = argv;
