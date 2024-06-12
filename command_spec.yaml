@@ -6,6 +6,25 @@ shell: bash
 
 steps:
   - type: Command
+    name: "OS Info"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      cat /etc/os-release
+  - type: Command
+    name: "OCI CLI version"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      echo "oci version: $(oci -v)"
+  - type: Command
+    name: "Kubectl version"
+    shell: bash
+    timeoutInSeconds: 300
+    command: |
+      echo "Kubectl version"
+      kubectl version --client)"
+  - type: Command
     name: "Install nodejs"
     shell: bash
     timeoutInSeconds: 300
