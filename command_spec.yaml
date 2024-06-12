@@ -23,7 +23,7 @@ steps:
     timeoutInSeconds: 300
     command: |
       echo "Kubectl version"
-      kubectl version --client)"
+      kubectl version --client
   - type: Command
     name: "Install nodejs"
     shell: bash
