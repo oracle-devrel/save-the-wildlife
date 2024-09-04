@@ -10,11 +10,6 @@ steps:
     shell: bash
     timeoutInSeconds: 3600
     command: |
-      rm -rf /etc/yum.repos.d/default.repo
-      sed -i 's/included\//included\/x86_64/g' /etc/yum.repos.d/oci-included-ol8.repo
-      (echo -e '[ol8_appstream]' && echo 'name=Oracle Linux 8 Application Stream' && echo "baseurl=https://yum-$OCI_RESOURCE_PRINCIPAL_REGION.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/" && echo 'gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle' && echo 'gpgcheck=1' && echo 'enabled=1') >> /etc/yum.repos.d/oci-included-ol8.repo
-      cat /etc/yum.repos.d/oci-included-ol8.repo
-      dnf module list --all nodejs
       dnf module enable -y nodejs:16
       dnf module install -y nodejs
   - type: Command
