@@ -23,7 +23,7 @@
     "portfinder-sync": "0.0.2",
     "raw-loader": "^4.0.2",
     "short-uuid": "^4.2.0",
-    "shortid": "^2.2.16",
+    "shortid": "^2.2.17",
     "socket.io-client": "^4.7.1",
     "style-loader": "^2.0.0",
     "three": "^0.158.0",
